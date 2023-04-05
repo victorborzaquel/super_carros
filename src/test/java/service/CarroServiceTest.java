@@ -33,18 +33,37 @@ class CarroServiceTest {
     }
 
     @Test
-    void velocityCannotBeBrakeNegative() {
+    void velocityCannotBeAccelerateNegative() {
         service.ligar(carro);
-        service.frear(carro, 1);
+
+        assertThrows(IllegalArgumentException.class, () -> service.acelerar(carro, -1));
+        assertEquals(0, carro.getVelocidadeAtual());
+    }
+
+    @Test
+    void velocityCannotBeAccelerateWhenCarIsOff() {
+        assertThrows(IllegalArgumentException.class, () -> service.acelerar(carro, 1));
+        assertEquals(0, carro.getVelocidadeAtual());
+    }
+
+    @Test
+    void velocityCannotBeBrakeWhenCarIsOff() {
+        assertThrows(IllegalArgumentException.class, () -> service.frear(carro, 1));
+        assertEquals(0, carro.getVelocidadeAtual());
+    }
+
+    @Test
+    void velocityCannotBeAccelerateGreaterThanMin() {
+        service.ligar(carro);
+        service.acelerar(carro, 0);
 
         assertEquals(0, carro.getVelocidadeAtual());
     }
 
-//    TODO: REFACTOR
     @Test
-    void velocityCannotBeAccelerateNegative() {
+    void velocityCannotBeBrakeGreaterThanMin() {
         service.ligar(carro);
-        service.acelerar(carro, -1);
+        service.frear(carro, 1);
 
         assertEquals(0, carro.getVelocidadeAtual());
     }
@@ -70,8 +89,8 @@ class CarroServiceTest {
     void velocityCannotBeAddBrakeGreaterThanVelocity() {
         service.ligar(carro);
         service.acelerar(carro, 50);
-        service.frear(carro, 51);
 
+        assertThrows(IllegalArgumentException.class, () -> service.frear(carro, 51));
         assertEquals(50, carro.getVelocidadeAtual());
     }
 
@@ -137,26 +156,20 @@ class CarroServiceTest {
 
     @Test
     void accelerateCarWhenOff() {
-        service.acelerar(carro, 1);
-
+        assertThrows(IllegalArgumentException.class, () -> service.acelerar(carro, 1));
         assertEquals(0, carro.getVelocidadeAtual());
         assertFalse(carro.getLigado());
     }
 
     @Test
     void brakeCarWhenOff() {
-        service.acelerar(carro, 10);
-        service.frear(carro, 1);
-
+        assertThrows(IllegalArgumentException.class, () -> service.frear(carro, 1));
         assertEquals(0, carro.getVelocidadeAtual());
         assertFalse(carro.getLigado());
     }
 
     @Test
     void showCurrentStateWhenOff() {
-        service.acelerar(carro, 1);
-        service.frear(carro, 1);
-
         assertDoesNotThrow(() -> service.mostrarEstadoAtual(carro));
     }
 }

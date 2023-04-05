@@ -19,19 +19,42 @@ public class CarroService {
         System.out.println(carro.toString());
     }
 
+    // TODO: REFACTOR
     public void acelerar(Carro carro, int velocidade) {
-        if(carro.getLigado()) {
-            if(carro.getVelocidadeAtual() + velocidade >= carro.getVelocidadeMaxima()) {
-                carro.setVelocidadeAtual(carro.getVelocidadeMaxima());
-            } else {
-                carro.setVelocidadeAtual(carro.getVelocidadeAtual() + velocidade);
-            }
+        if (velocidade < 0) {
+            throw new IllegalArgumentException("A velocidade não pode ser negativa!");
         }
+
+        if (!carro.getLigado()) {
+            throw new IllegalArgumentException("O carro precisa estar ligado para acelerar!");
+        }
+
+        if(carro.getVelocidadeAtual() + velocidade >= carro.getVelocidadeMaxima()) {
+            carro.setVelocidadeAtual(carro.getVelocidadeMaxima());
+            return;
+        }
+
+        carro.setVelocidadeAtual(carro.getVelocidadeAtual() + velocidade);
     }
 
     public void frear(Carro carro, int velocidade) {
-        if(carro.getLigado() && (carro.getVelocidadeAtual() - velocidade) >= 0) {
-            carro.setVelocidadeAtual(carro.getVelocidadeAtual()-velocidade);
+        if (velocidade < 0) {
+            throw new IllegalArgumentException("A velocidade não pode ser negativa!");
         }
+
+        if (!carro.getLigado()) {
+            throw new IllegalArgumentException("O carro precisa estar ligado para frear!");
+        }
+
+        if (carro.getVelocidadeAtual() < velocidade) {
+            throw new IllegalArgumentException("A velocidade não pode ser maior que a velocidade atual!");
+        }
+
+        if(carro.getVelocidadeAtual() - velocidade <= 0) {
+            carro.setVelocidadeAtual(0);
+            return;
+        }
+
+        carro.setVelocidadeAtual(carro.getVelocidadeAtual()-velocidade);
     }
 }
